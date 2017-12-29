@@ -7,6 +7,8 @@ import android.content.*
 import android.graphics.*
 import android.view.*
 import java.util.LinkedList
+import java.util.concurrent.ConcurrentLinkedQueue
+
 class CircularButtonListView(ctx:Context):View(ctx) {
     val texts:LinkedList<String> = LinkedList()
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -42,5 +44,45 @@ class CircularButtonListView(ctx:Context):View(ctx) {
             x = ox +(w-ox)*scale
         }
         fun handleTap(x:Float,y:Float):Boolean  = x>=this.x-r && x<=this.x+r && y>=this.y-r && y<=this.y+r
+    }
+    data class CircularButtonList(var w:Float,var h:Float,var texts:LinkedList<String>,var gap:Float = 0f) {
+        val buttons:ConcurrentLinkedQueue<CircularButton> = ConcurrentLinkedQueue()
+        val updatingButtons:ConcurrentLinkedQueue<CircularButton> = ConcurrentLinkedQueue()
+        var curr:CircularButton?=null
+        init {
+            if(texts.size > 0) {
+                gap = h/(2*texts.size+1)
+                val x = w/2
+                var y = 3*gap/2
+                texts.forEach {
+                    buttons.add(CircularButton(it,x,y,3*gap/4))
+                    updatingButtons.add(CircularButton(it,x,y,3*gap/4))
+                    y += 2*gap
+                }
+            }
+        }
+        fun draw(canvas:Canvas,paint:Paint) {
+            buttons.forEach { button ->
+                button.draw(canvas,paint)
+            }
+        }
+        fun updateLeft(scale:Float) {
+            updatingButtons.forEach {
+                it.updateLeft(scale,w+2*gap)
+            }
+        }
+        fun updateDown(scale:Float) {
+            curr?.updateDown(scale,h+2*gap)
+        }
+        fun handleTap(x:Float,y:Float,startcb:()->Unit) {
+            buttons.forEach {
+                if(it.handleTap(x,y)) {
+                    curr = it
+                    updatingButtons.remove(it)
+                    startcb()
+                    return
+                }
+            }
+        }
     }
 }
