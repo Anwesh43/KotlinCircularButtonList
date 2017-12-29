@@ -29,3 +29,13 @@ class ViewAnimatorQueue(var view:View) {
         }
     }
 }
+data class State(var scale:Float = 0f) {
+    fun update(updatecb:(Float)->Unit,stopcb:()->Unit) {
+        scale += 0.1f
+        updatecb(scale)
+        if(scale > 1) {
+            scale = 1f
+            stopcb()
+        }
+    }
+}
