@@ -12,8 +12,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class CircularButtonListView(ctx:Context):View(ctx) {
     val texts:LinkedList<String> = LinkedList()
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val renderer = CircularButtonListRenderer(this)
     override fun onDraw(canvas:Canvas) {
-
+        renderer.render(canvas,paint)
     }
     fun addText(text:String) {
         texts.add(text)
@@ -21,7 +22,7 @@ class CircularButtonListView(ctx:Context):View(ctx) {
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap(event.x,event.y)
             }
         }
         return true
@@ -94,6 +95,7 @@ class CircularButtonListView(ctx:Context):View(ctx) {
                 val h = canvas.height.toFloat()
                 buttonList = CircularButtonList(w,h,view.texts)
             }
+            canvas.drawColor(Color.parseColor("#212121"))
             buttonList?.draw(canvas,paint)
             time++
             animatorQueue.animate()
