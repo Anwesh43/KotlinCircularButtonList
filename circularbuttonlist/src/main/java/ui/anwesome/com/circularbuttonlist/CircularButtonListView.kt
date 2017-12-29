@@ -37,7 +37,7 @@ class CircularButtonListView(ctx:Context):View(ctx) {
             canvas.save()
             canvas.translate(x,y)
             canvas.drawCircle(0f,0f,r,paint)
-            paint.textSize = r/5
+            paint.textSize = r/3
             paint.color = Color.WHITE
             canvas.drawText(text,-paint.measureText(text)/2,r/10,paint)
             canvas.restore()
@@ -60,8 +60,9 @@ class CircularButtonListView(ctx:Context):View(ctx) {
                 val x = w/2
                 var y = 3*gap/2
                 texts.forEach {
-                    buttons.add(CircularButton(it,x,y,3*gap/4))
-                    updatingButtons.add(CircularButton(it,x,y,3*gap/4))
+                    val button = CircularButton(it,x,y,3*gap/4)
+                    buttons.add(button)
+                    updatingButtons.add(button)
                     y += 2*gap
                 }
             }

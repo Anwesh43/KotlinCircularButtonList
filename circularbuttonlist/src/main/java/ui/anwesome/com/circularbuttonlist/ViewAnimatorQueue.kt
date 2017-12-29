@@ -18,10 +18,13 @@ class ViewAnimatorQueue(var view:View) {
             state.update({scale ->
                 animations.at(0)?.invoke(scale)
             },{
-                animated = false
+                animations.remove(animations.at(0))
+                if(animations.size == 0) {
+                    animated = false
+                }
             })
             try {
-                Thread.sleep(50)
+                Thread.sleep(80)
                 view.invalidate()
             } catch(ex: Exception) {
 
