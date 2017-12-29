@@ -3,6 +3,7 @@ package ui.anwesome.com.circularbuttonlist
 /**
  * Created by anweshmishra on 30/12/17.
  */
+import android.app.Activity
 import android.content.*
 import android.graphics.*
 import android.view.*
@@ -18,6 +19,9 @@ class CircularButtonListView(ctx:Context):View(ctx) {
     }
     fun addText(text:String) {
         texts.add(text)
+    }
+    fun addToParent(activity: Activity) {
+        activity.setContentView(this)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
@@ -110,6 +114,12 @@ class CircularButtonListView(ctx:Context):View(ctx) {
                 }
                 animatorQueue.startAnimation()
             })
+        }
+    }
+    companion object {
+        fun create(activity:Activity):CircularButtonListView {
+            val view = CircularButtonListView(activity)
+            return view
         }
     }
 }
