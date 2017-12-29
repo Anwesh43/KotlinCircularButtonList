@@ -85,4 +85,29 @@ class CircularButtonListView(ctx:Context):View(ctx) {
             }
         }
     }
+    data class CircularButtonListRenderer(var view:CircularButtonListView,var time:Int = 0) {
+        val animatorQueue = ViewAnimatorQueue(view)
+        var buttonList:CircularButtonList?=null
+        fun render(canvas:Canvas,paint:Paint) {
+            if(time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                buttonList = CircularButtonList(w,h,view.texts)
+            }
+            buttonList?.draw(canvas,paint)
+            time++
+            animatorQueue.animate()
+        }
+        fun handleTap(x:Float,y:Float) {
+            buttonList?.handleTap(x,y,{
+                animatorQueue.addAnimation {scale ->
+                    buttonList?.updateLeft(scale)
+                }
+                animatorQueue.addAnimation {scale ->
+                    buttonList?.updateDown(scale)
+                }
+                animatorQueue.startAnimation()
+            })
+        }
+    }
 }
